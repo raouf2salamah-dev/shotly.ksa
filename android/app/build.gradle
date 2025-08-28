@@ -1,11 +1,19 @@
+// This file is used for the 'app' module of your Flutter project.
+
 plugins {
+    // Apply the Android Application plugin.
     id "com.android.application"
+    // Apply the Kotlin Android plugin.
     id "kotlin-android"
+    // Apply the new Flutter Gradle plugin loader. This replaces the old 'apply script' method.
     id "dev.flutter.flutter-gradle-plugin"
+    // Apply Google Services plugin (for Firebase).
     id "com.google.gms.google-services"
+    // Apply Firebase Crashlytics plugin.
     id "com.google.firebase.crashlytics"
 }
 
+// Load properties from local.properties file, typically for sensitive information like keystore paths.
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -14,109 +22,131 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+// Retrieve Flutter version code from local.properties or default to '1'.
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
     flutterVersionCode = '1'
 }
 
+// Retrieve Flutter version name from local.properties or default to '1.0'.
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
 android {
+    // Define the namespace for the R and BuildConfig classes.
     namespace "com.shotly.app"
+    // Set the compile SDK version.
     compileSdkVersion 34
+    // Use Flutter's specified NDK version.
     ndkVersion flutter.ndkVersion
 
     compileOptions {
+        // Set source and target Java compatibility to Java 17.
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
+        // Set JVM target for Kotlin compilation to 17.
         jvmTarget = '17'
     }
 
     sourceSets {
+        // Add Kotlin source directory to the main source set.
         main.java.srcDirs += 'src/main/kotlin'
     }
 
     defaultConfig {
+        // Define the unique application ID for your app.
         applicationId "com.shotly.app"
+        // Set the minimum SDK version your app supports.
         minSdkVersion 23
+        // Use Flutter's specified target SDK version.
         targetSdkVersion flutter.targetSdkVersion
+        // Set the version code, used for app updates on app stores.
         versionCode flutterVersionCode.toInteger()
+        // Set the user-visible version name.
         versionName flutterVersionName
         
         ndk {
-            // Only include the ABIs you need to reduce APK size
+            // Specify which Application Binary Interfaces (ABIs) to include.
+            // This reduces APK size by only including native libraries for these architectures.
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
         
-        // Enable multidex support if needed
+        // Enable multidex support, necessary for apps with a large number of methods.
         multiDexEnabled true
     }
 
     signingConfigs {
+        // Debug signing configuration.
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // Release signing configuration.
+        // IMPORTANT: Replace 'debug.keystore' and 'androiddebugkey' with your actual release keystore details.
         release {
-            // You can update these with your actual release keystore details
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file('debug.keystore') // Change to your release keystore file
+            storePassword 'android' // Change to your release keystore password
+            keyAlias 'androiddebugkey' // Change to your release key alias
+            keyPassword 'android' // Change to your release key password
         }
     }
 
     buildTypes {
         debug {
+            // Apply debug signing configuration.
             signingConfig signingConfigs.debug
+            // Disable code obfuscation for easier debugging.
             minifyEnabled false
+            // Disable resource shrinking for easier debugging.
             shrinkResources false
         }
         release {
+            // Apply release signing configuration.
             signingConfig signingConfigs.release
             
-            // Enable code and resource shrinking for smaller APK size
+            // Enable code and resource shrinking for smaller APK size.
             minifyEnabled true
             shrinkResources true
             
-            // Use ProGuard configuration
+            // Use ProGuard configuration for code obfuscation and optimization.
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                           'proguard-rules.pro'
                           
-            // Enable zipAlignEnabled for better runtime performance
+            // Enable zipAlignEnabled for better runtime performance.
             zipAlignEnabled true
             
-            // Disable debugging for release builds
+            // Disable debugging for release builds for security and performance.
             debuggable false
             
-            // Enable resource optimization
+            // Enable PNG image optimization.
             crunchPngs true
         }
     }
 }
 
 flutter {
+    // Specifies the location of the Flutter project root.
     source '../..'
 }
 
 dependencies {
-    // Import the Firebase BoM
+    // Import the Firebase BoM (Bill of Materials) for consistent Firebase library versions.
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
 
-    // Add the dependency for Firebase Analytics
+    // Add the dependency for Firebase Analytics.
     implementation("com.google.firebase:firebase-analytics")
     
-    // Add Firebase Crashlytics
+    // Add Firebase Crashlytics for crash reporting.
     implementation("com.google.firebase:firebase-crashlytics")
 
-    // Add the dependencies for any other desired Firebase products
+    // Add the dependencies for any other desired Firebase products as needed.
+    // For a list of available libraries, refer to:
     // https://firebase.google.com/docs/android/setup#available-libraries
 }
