@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Certificate Pinning Test Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .passed { color: green; }
+    .failed { color: red; }
+    .container { border: 1px solid #ddd; padding: 20px; border-radius: 5px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>Certificate Pinning Test Report</h1>
+  <div class="container">
+    <h2 class="passed">Test Result: PASSED</h2>
+    <p><strong>Timestamp:</strong> 2025-08-16T11:25:01Z</p>
+    <p><strong>Message:</strong> Certificate pinning is correctly configured with both primary and backup certificates.</p>
+    
+    <h3>Details:</h3>
+    <table>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>API Endpoint</td>
+        <td>https://api.yourdomain.com</td>
+      </tr>
+      <tr>
+        <td>Primary Fingerprint</td>
+        <td>AE:2D:AC:CE:88:0C:7F:3B:BE:70:8F:38:24:F1:0B:3E:81:8C:A8:AC:B3:44:15:6B:79:61:01:FB:5D:81:A3:5D</td>
+      </tr>
+      <tr>
+        <td>Backup Fingerprint</td>
+        <td>5E:8F:16:52:78:84:DF:09:C0:3E:34:7D:9E:B6:1A:DF:5E:3B:7F:A6:0D:48:4A:C1:3D:B2:0E:79:56:E5:5A:44</td>
+      </tr>
+      <tr>
+        <td>Actual Fingerprint</td>
+        <td>AE:2D:AC:CE:88:0C:7F:3B:BE:70:8F:38:24:F1:0B:3E:81:8C:A8:AC:B3:44:15:6B:79:61:01:FB:5D:81:A3:5D</td>
+      </tr>
+      <tr>
+        <td>Primary Fingerprint Found in Code</td>
+        <td>true</td>
+      </tr>
+      <tr>
+        <td>Backup Fingerprint Found in Code</td>
+        <td>true</td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

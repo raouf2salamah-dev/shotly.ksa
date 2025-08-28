@@ -1,0 +1,136 @@
+name: Security Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  security-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'stable'
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Run static analysis
+        run: |
+          flutter analyze
+          mkdir -p reports
+          flutter analyze --write=reports/analyze-report.json
+          cp reports/analyze-report.json analyze-report.json
+        continue-on-error: false
+      
+      - name: Run Snyk scan
+        uses: snyk/actions@master
+        with:
+          command: test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      
+      - name: Run SSL pinning test
+        run: |
+          cd test_scripts
+          chmod +x ci_certificate_pinning_test.sh
+          ./ci_certificate_pinning_test.sh --ci-mode
+        continue-on-error: false
+        
+      - name: Run Flutter tests with coverage
+        run: |
+          flutter test --coverage
+          mkdir -p reports/flutter
+          cp coverage/lcov.info reports/flutter/
+        
+      - name: Generate and merge test reports
+        run: |
+          cd test_scripts
+          chmod +x generate_test_reports.sh
+          ./generate_test_reports.sh --ci-mode
+        
+      - name: Upload test reports as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: reports/
+          
+      - name: Upload to GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          cd test_scripts
+          ./upload_to_github_pages.sh --ci-mode
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload to Firebase (if configured)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          cd test_scripts
+          ./upload_to_firebase.sh --ci-mode --project-id ${{ secrets.FIREBASE_PROJECT_ID }}
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        continue-on-error: true
+        
+      - name: Upload to AWS S3 (if configured)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          cd test_scripts
+          ./generate_test_reports.sh --ci-mode --upload-to s3://${{ secrets.AWS_S3_BUCKET }}/test-reports/
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+        continue-on-error: true
+
+  sonarqube-analysis:
+    runs-on: ubuntu-latest
+    needs: security-checks
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >\-
+            -Dsonar.projectKey=flutter-security-app
+            -Dsonar.projectName='Flutter Security App'
+            -Dsonar.sources=lib
+            -Dsonar.tests=test
+            -Dsonar.exclusions=**/*.g.dart,**/*.freezed.dart
+            -Dsonar.dart.analyzer.reportPaths=analyze-report.json
+
+  owasp-dependency-check:
+    runs-on: ubuntu-latest
+    needs: security-checks
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'Flutter Security App'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          args: >-
+            --failOnCVSS 7
+            --enableExperimental
+      
+      - name: Upload dependency check report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: reports/

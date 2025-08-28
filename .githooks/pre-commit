@@ -1,0 +1,59 @@
+#!/bin/bash
+
+echo "Running security pre-commit checks..."
+
+# Store the exit code for each check
+STATIC_ANALYSIS_EXIT_CODE=0
+SSL_PINNING_EXIT_CODE=0
+
+# Run Flutter static analysis
+echo "Running Flutter static analysis..."
+flutter analyze
+STATIC_ANALYSIS_EXIT_CODE=$?
+
+if [ $STATIC_ANALYSIS_EXIT_CODE -ne 0 ]; then
+    echo "❌ Flutter static analysis failed. Please fix the issues before committing."
+else
+    echo "✅ Flutter static analysis passed."
+fi
+
+# Check for hardcoded secrets
+echo "Checking for hardcoded secrets..."
+SECRETS_FOUND=$(grep -r --include="*.dart" --include="*.yaml" --include="*.json" 'api[_-]?key|secret|password|token' --exclude-dir=".dart_tool" --exclude-dir="build" .)
+
+if [ ! -z "$SECRETS_FOUND" ]; then
+    echo "❌ Potential hardcoded secrets found:"
+    echo "$SECRETS_FOUND"
+    echo "Please remove hardcoded secrets and use secure storage or environment variables."
+    SECRETS_EXIT_CODE=1
+else
+    echo "✅ No hardcoded secrets found."
+    SECRETS_EXIT_CODE=0
+fi
+
+# Check for SSL pinning implementation
+echo "Checking SSL pinning implementation..."
+if [ -f "test_scripts/ci_certificate_pinning_test.sh" ]; then
+    cd test_scripts
+    ./ci_certificate_pinning_test.sh
+    SSL_PINNING_EXIT_CODE=$?
+    cd ..
+    
+    if [ $SSL_PINNING_EXIT_CODE -ne 0 ]; then
+        echo "❌ SSL pinning check failed. Please verify your certificate pinning implementation."
+    else
+        echo "✅ SSL pinning check passed."
+    fi
+else
+    echo "⚠️ SSL pinning test script not found. Skipping check."
+    SSL_PINNING_EXIT_CODE=0
+fi
+
+# Determine overall exit code
+if [ $STATIC_ANALYSIS_EXIT_CODE -ne 0 ] || [ $SECRETS_EXIT_CODE -ne 0 ] || [ $SSL_PINNING_EXIT_CODE -ne 0 ]; then
+    echo "❌ Pre-commit checks failed. Please fix the issues before committing."
+    exit 1
+else
+    echo "✅ All pre-commit checks passed."
+    exit 0
+fi

@@ -1,0 +1,56 @@
+# App Store Description Template
+
+## App Name
+[Your App Name]
+
+## Subtitle (30 characters max)
+[Brief, catchy subtitle]
+
+## Promotional Text (170 characters max)
+[Highlight new features or limited-time promotions - this can be updated without a new app submission]
+
+## Description (4000 characters max)
+
+### Opening Paragraph (Attention-Grabbing)
+[Start with a strong, concise value proposition that explains what your app does and why users need it]
+
+### Key Features (Bullet Points)
+• [Feature 1 with benefit]
+• [Feature 2 with benefit]
+• [Feature 3 with benefit]
+• [Feature 4 with benefit]
+• [Feature 5 with benefit]
+
+### Detailed Description
+[Expand on your app's functionality, use cases, and unique selling points]
+
+### Social Proof
+[Mention awards, recognition, positive press, or user statistics if available]
+
+### Call to Action
+[Encourage users to download now and start experiencing the benefits]
+
+## Keywords (100 characters max, comma-separated)
+[keyword1,keyword2,keyword3,keyword4,keyword5...]
+
+## Support URL
+[URL to your support website or help center]
+
+## Marketing URL (Optional)
+[URL to your marketing website]
+
+## Privacy Policy URL
+[URL to your privacy policy]
+
+---
+
+## Notes for Submission
+
+- Keep sentences short and easy to read
+- Focus on benefits, not just features
+- Use keywords naturally throughout the description
+- Update the description periodically to highlight new features
+- Consider localization for international markets
+- Avoid ALL CAPS (except for emphasis on a few words)
+- Don't mention competing apps or platforms
+- Avoid time-sensitive content in the main description

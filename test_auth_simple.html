@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Auth Test</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Simple Firebase Auth Test</h1>
+    
+    <button onclick="testAuth()">Test Authentication</button>
+    <div id="result"></div>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: 'AIzaSyA-Ng77iMdv5D6zj_WLT9wOEnD3odY0NSc',
+            authDomain: 'shotly-ksa.firebaseapp.com',
+            projectId: 'shotly-ksa',
+            storageBucket: 'shotly-ksa.appspot.com',
+            messagingSenderId: '218714911108',
+            appId: '1:218714911108:web:93d001779fdc2f16572dd1'
+        };
+        
+        async function testAuth() {
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                // Initialize Firebase
+                const app = firebase.initializeApp(firebaseConfig);
+                const auth = firebase.auth();
+                
+                resultDiv.innerHTML = 'Firebase initialized. Testing authentication...';
+                
+                // Try to create a test user
+                try {
+                    const userCredential = await auth.createUserWithEmailAndPassword(
+                        'test@example.com', 
+                        'testpassword123'
+                    );
+                    resultDiv.innerHTML = `✅ SUCCESS: User created and logged in: ${userCredential.user.email}`;
+                    resultDiv.className = 'result success';
+                } catch (createError) {
+                    if (createError.code === 'auth/email-already-in-use') {
+                        // User exists, try to sign in
+                        try {
+                            const signInCredential = await auth.signInWithEmailAndPassword(
+                                'test@example.com', 
+                                'testpassword123'
+                            );
+                            resultDiv.innerHTML = `✅ SUCCESS: User signed in: ${signInCredential.user.email}`;
+                            resultDiv.className = 'result success';
+                        } catch (signInError) {
+                            resultDiv.innerHTML = `❌ SIGN IN FAILED: ${signInError.message}`;
+                            resultDiv.className = 'result error';
+                        }
+                    } else {
+                        resultDiv.innerHTML = `❌ CREATE USER FAILED: ${createError.message}`;
+                        resultDiv.className = 'result error';
+                    }
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `❌ FIREBASE INIT FAILED: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+    </script>
+</body>
+</html>

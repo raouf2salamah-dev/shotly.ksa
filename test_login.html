@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Test</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Firebase Auth Test</h1>
+    <div>
+        <input type="email" id="email" placeholder="Email" value="raouf2salamah@gmail.com">
+        <input type="password" id="password" placeholder="Password" value="testpassword">
+        <button onclick="testLogin()">Test Login</button>
+    </div>
+    <div id="result"></div>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-Ng77iMdv5D6zj_WLT9wOEnD3odY0NSc",
+            authDomain: "shotly-ksa.firebaseapp.com",
+            projectId: "shotly-ksa",
+            storageBucket: "shotly-ksa.appspot.com",
+            messagingSenderId: "218714911108",
+            appId: "1:218714911108:web:93d001779fdc2f16572dd1"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        async function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                resultDiv.innerHTML = 'Testing login...';
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                resultDiv.innerHTML = `Success! User: ${userCredential.user.email}`;
+                console.log('Login successful:', userCredential.user);
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                console.error('Login error:', error);
+            }
+        }
+        
+        // Monitor auth state
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log('User is signed in:', user.email);
+            } else {
+                console.log('User is signed out');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Login Test</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .result { margin: 10px 0; padding: 10px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; }
+        input { padding: 8px; margin: 5px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Direct Firebase Login Test</h1>
+    
+    <div class="test-section">
+        <h3>1. Firebase Configuration Test</h3>
+        <button onclick="testFirebaseConfig()">Test Firebase Config</button>
+        <div id="configResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Authentication Test</h3>
+        <input type="email" id="email" placeholder="Email" value="raouf2salamah@gmail.com">
+        <input type="password" id="password" placeholder="Password" value="123456">
+        <br>
+        <button onclick="testLogin()">Test Login</button>
+        <button onclick="createTestUser()">Create Test User</button>
+        <button onclick="checkAuthState()">Check Auth State</button>
+        <div id="authResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Console Logs</h3>
+        <div id="logs" class="result" style="background-color: #f8f9fa; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        // Override console.log to capture logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        const logsDiv = document.getElementById('logs');
+        
+        function addLog(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+            logEntry.style.color = type === 'error' ? 'red' : 'black';
+            logsDiv.appendChild(logEntry);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addLog(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addLog(args.join(' '), 'error');
+        };
+
+        // Firebase configuration from your app (using actual values)
+        const firebaseConfig = {
+            apiKey: 'AIzaSyA-Ng77iMdv5D6zj_WLT9wOEnD3odY0NSc',
+            authDomain: 'shotly-ksa.firebaseapp.com',
+            projectId: 'shotly-ksa',
+            storageBucket: 'shotly-ksa.appspot.com',
+            messagingSenderId: '218714911108',
+            appId: '1:218714911108:web:93d001779fdc2f16572dd1'
+            // Removed invalid measurementId placeholder
+        };
+        
+        let app;
+        let auth;
+        
+        function testFirebaseConfig() {
+            const resultDiv = document.getElementById('configResult');
+            try {
+                console.log('Testing Firebase configuration...');
+                app = firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                
+                resultDiv.innerHTML = '✅ Firebase initialized successfully';
+                resultDiv.className = 'result success';
+                console.log('Firebase app:', app);
+                console.log('Firebase auth:', auth);
+                
+                // Set up auth state listener
+                auth.onAuthStateChanged((user) => {
+                    console.log('Auth state changed:', user ? `User: ${user.email}` : 'No user');
+                });
+                
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Firebase initialization failed: ${error.message}`;
+                resultDiv.className = 'result error';
+                console.error('Firebase init error:', error);
+            }
+        }
+        
+        async function createTestUser() {
+            const resultDiv = document.getElementById('authResult');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!auth) {
+                resultDiv.innerHTML = '❌ Firebase not initialized. Run config test first.';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            try {
+                console.log(`Creating user: ${email}`);
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                resultDiv.innerHTML = `✅ User created successfully: ${userCredential.user.email}`;
+                resultDiv.className = 'result success';
+                console.log('User created:', userCredential.user);
+            } catch (error) {
+                resultDiv.innerHTML = `❌ User creation failed: ${error.message}`;
+                resultDiv.className = 'result error';
+                console.error('User creation error:', error);
+            }
+        }
+        
+        async function testLogin() {
+            const resultDiv = document.getElementById('authResult');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!auth) {
+                resultDiv.innerHTML = '❌ Firebase not initialized. Run config test first.';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            try {
+                console.log(`Attempting login: ${email}`);
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                resultDiv.innerHTML = `✅ Login successful: ${userCredential.user.email}`;
+                resultDiv.className = 'result success';
+                console.log('Login successful:', userCredential.user);
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Login failed: ${error.message}`;
+                resultDiv.className = 'result error';
+                console.error('Login error:', error);
+            }
+        }
+        
+        function checkAuthState() {
+            const resultDiv = document.getElementById('authResult');
+            
+            if (!auth) {
+                resultDiv.innerHTML = '❌ Firebase not initialized. Run config test first.';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            const user = auth.currentUser;
+            if (user) {
+                resultDiv.innerHTML = `✅ User is logged in: ${user.email}`;
+                resultDiv.className = 'result success';
+                console.log('Current user:', user);
+            } else {
+                resultDiv.innerHTML = '❌ No user is currently logged in';
+                resultDiv.className = 'result error';
+                console.log('No current user');
+            }
+        }
+        
+        // Auto-run config test on page load
+        window.onload = function() {
+            console.log('Page loaded, testing Firebase config...');
+            testFirebaseConfig();
+        };
+    </script>
+</body>
+</html>

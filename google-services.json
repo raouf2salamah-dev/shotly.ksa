@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "218714911108",
+    "project_id": "shotly-ksa",
+    "storage_bucket": "shotly-ksa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218714911108:android:93d001779fdc2f16572dd1",
+        "android_client_info": {
+          "package_name": "com.shotly.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-Ng77iMdv5D6zj_WLT9wOEnD3odY0NSc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

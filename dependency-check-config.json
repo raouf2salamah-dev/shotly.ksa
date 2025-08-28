@@ -1,0 +1,24 @@
+{
+  "scanConfigurations": [
+    {
+      "scanType": "DEPENDENCY",
+      "options": {
+        "projectName": "Flutter Security App",
+        "scanPath": ".",
+        "outputFormats": ["HTML", "JSON"],
+        "outputDirectory": "reports",
+        "failBuildOnCVSS": 7,
+        "suppressionFile": "dependency-suppressions.xml",
+        "enableExperimental": true,
+        "enableRetired": true
+      }
+    }
+  ],
+  "suppressions": [
+    {
+      "notes": "False positive example - replace with actual suppressions if needed",
+      "filePath": "example/path/to/dependency",
+      "vulnerabilityName": "CVE-XXXX-XXXX"
+    }
+  ]
+}

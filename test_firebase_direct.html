@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Firebase Test</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Direct Firebase Authentication Test</h1>
+    <div>
+        <h3>Test 1: Create User Account</h3>
+        <button onclick="createTestUser()">Create Test User</button>
+        <div id="createResult"></div>
+    </div>
+    <div>
+        <h3>Test 2: Login with Test Account</h3>
+        <button onclick="loginTestUser()">Login Test User</button>
+        <div id="loginResult"></div>
+    </div>
+    <div>
+        <h3>Test 3: Check Auth State</h3>
+        <button onclick="checkAuthState()">Check Auth State</button>
+        <div id="authResult"></div>
+    </div>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-Ng77iMdv5D6zj_WLT9wOEnD3odY0NSc",
+            authDomain: "shotly-ksa.firebaseapp.com",
+            projectId: "shotly-ksa",
+            storageBucket: "shotly-ksa.appspot.com",
+            messagingSenderId: "218714911108",
+            appId: "1:218714911108:web:93d001779fdc2f16572dd1"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        async function createTestUser() {
+            const resultDiv = document.getElementById('createResult');
+            try {
+                resultDiv.innerHTML = 'Creating user...';
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(
+                    'raouf2salamah@gmail.com', 
+                    'testpassword'
+                );
+                resultDiv.innerHTML = `✅ User created successfully: ${userCredential.user.email}`;
+                console.log('User created:', userCredential.user);
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    resultDiv.innerHTML = '⚠️ User already exists (this is expected)';
+                } else {
+                    resultDiv.innerHTML = `❌ Error creating user: ${error.message}`;
+                }
+                console.error('Create user error:', error);
+            }
+        }
+        
+        async function loginTestUser() {
+            const resultDiv = document.getElementById('loginResult');
+            try {
+                resultDiv.innerHTML = 'Logging in...';
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(
+                    'raouf2salamah@gmail.com', 
+                    'testpassword'
+                );
+                resultDiv.innerHTML = `✅ Login successful: ${userCredential.user.email}`;
+                console.log('Login successful:', userCredential.user);
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Login failed: ${error.message}`;
+                console.error('Login error:', error);
+            }
+        }
+        
+        function checkAuthState() {
+            const resultDiv = document.getElementById('authResult');
+            const user = firebase.auth().currentUser;
+            if (user) {
+                resultDiv.innerHTML = `✅ User is logged in: ${user.email}`;
+            } else {
+                resultDiv.innerHTML = '❌ No user is logged in';
+            }
+        }
+        
+        // Monitor auth state changes
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log('Auth state changed - User signed in:', user.email);
+            } else {
+                console.log('Auth state changed - User signed out');
+            }
+        });
+    </script>
+</body>
+</html>
