@@ -1,35 +1,46 @@
 buildscript {
-    ext.kotlin_version = '2.0.0'
+    // Defines the Kotlin version for Gradle plugin
+    ext.kotlin_version = '1.9.20'
+    // Defines the Java version for compilation
     ext.java_version = JavaVersion.VERSION_17
     
     repositories {
+        // Google's Maven repository
         google()
+        // Maven Central repository
         mavenCentral()
     }
 
     dependencies {
+        // Android Gradle Plugin
         classpath 'com.android.tools.build:gradle:8.1.0'
+        // Kotlin Gradle Plugin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Google Services plugin (for Firebase)
         classpath 'com.google.gms:google-services:4.4.3'
+        // Firebase Crashlytics Gradle plugin
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
     }
 }
 
 allprojects {
     repositories {
+        // Google's Maven repository for all subprojects
         google()
+        // Maven Central repository for all subprojects
         mavenCentral()
     }
 }
 
+// Sets the root build directory for all project outputs
 rootProject.buildDir = '../build'
+
+// Configures each subproject to use a build directory within the root build directory
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
-subprojects {
-    project.evaluationDependsOn(':app')
-}
 
+// Defines a 'clean' task to delete the entire build directory
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
