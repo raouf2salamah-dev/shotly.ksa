@@ -1,0 +1,63 @@
+workflows: 
+  android-build: # This workflow is for Android, keep it as is if not changing. 
+    name: Android Build 
+    environment: 
+      flutter: stable 
+      xcode: latest 
+      cocoapods: default 
+      
+    scripts: 
+      - name: Set up Flutter 
+        script: | 
+          flutter doctor 
+      - name: Get Flutter dependencies 
+        script: | 
+          flutter pub get 
+      - name: Build Android App 
+        script: | 
+          flutter build apk 
+    
+    artifacts: 
+      - build/app/outputs/flutter-apk/*.apk 
+
+  ios-build: # This is the new or modified workflow for iOS 
+    name: iOS Build 
+    instance_type: mac_mini_m1 # Required for iOS builds on Codemagic 
+    environment: 
+      flutter: stable 
+      xcode: latest # Or a specific version like 14.3, 15.0 if needed 
+      cocoapods: 1.12.1 # A stable version known to work well 
+      
+    scripts: 
+      - name: Set up Flutter 
+        script: | 
+          flutter doctor 
+      - name: Get Flutter dependencies 
+        script: | 
+          flutter pub get 
+
+      - name: Update CocoaPods repositories 
+        script: | 
+          # This command ensures all CocoaPods repositories are up-to-date 
+          pod repo update 
+      
+      - name: Update Firebase/Auth pod 
+        script: | 
+          # This command resolves the specific Firebase/Auth dependency conflict 
+          cd ios && pod update Firebase/Auth 
+          # Important: cd back to the root before the next flutter command 
+          cd .. 
+
+      - name: Install CocoaPods 
+        script: | 
+          # Install all pods as defined in Podfile, ensuring everything is in sync 
+          cd ios && pod install --repo-update 
+          cd .. 
+
+      - name: Build iOS App 
+        script: | 
+          # Build for release, using the updated pods 
+          flutter build ipa --release 
+          
+    artifacts: 
+      - build/ios/ipa/*.ipa
