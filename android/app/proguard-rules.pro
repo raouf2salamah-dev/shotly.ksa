@@ -22,6 +22,9 @@
 # Keep Stripe SDK
 -keep class com.stripe.android.** { *; }
 
+# Keep Google Play Core for split install
+-keep class com.google.android.play.core.** { *; }
+
 # Keep any native methods
 -keepclasseswithmembernames class * {
     native <methods>;
