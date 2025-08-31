@@ -19,18 +19,18 @@
  } 
  
  plugins { 
-     // Defines the Android Application plugin and its version. 
-     // The `apply false` is crucial here so that the plugin is only applied to modules 
-     // that explicitly need it (e.g., the app module). 
-     id 'com.android.application' version '8.1.0' apply false 
- 
-     // Defines the Android Library plugin and its version. 
-     // The `apply false` is used for the same reason as above. 
-     id 'com.android.library' version '8.1.0' apply false 
- 
-     // Defines the Kotlin Android plugin and its version. 
-     id 'org.jetbrains.kotlin.android' version '1.9.20' apply false 
- } 
+    // Defines the Android Application plugin. 
+    // The `apply false` is crucial here so that the plugin is only applied to modules 
+    // that explicitly need it (e.g., the app module). 
+    id 'com.android.application' apply false 
+
+    // Defines the Android Library plugin. 
+    // The `apply false` is used for the same reason as above. 
+    id 'com.android.library' apply false 
+
+    // Defines the Kotlin Android plugin. 
+    id 'org.jetbrains.kotlin.android' apply false 
+} 
  
  // Configures repositories for all projects (including the root project and all subprojects). 
  allprojects { 
