@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
+import 'package:jailbreak_root_detection/jailbreak_root_detection.dart';
 
 class DeviceIntegrityResult {
   final bool isJailbrokenOrRooted;
@@ -74,8 +74,8 @@ class DeviceIntegrityService {
     bool canMockLocation = false;
     
     try {
-      jailbroken = await FlutterJailbreakDetection.jailbroken;
-      developerMode = await FlutterJailbreakDetection.developerMode;
+      jailbroken = await JailbreakRootDetection.instance.isJailBroken;
+      developerMode = await JailbreakRootDetection.instance.isDevMode;
       // The package doesn't have isRealDevice and canMockLocation methods
       // Using reasonable defaults instead
       isEmulator = false;

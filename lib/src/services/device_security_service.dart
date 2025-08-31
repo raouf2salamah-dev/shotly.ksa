@@ -1,4 +1,4 @@
-import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
+import 'package:jailbreak_root_detection/jailbreak_root_detection.dart';
 import 'package:flutter/material.dart';
 
 /// DeviceSecurityService provides methods to check if a device has been
@@ -27,7 +27,7 @@ class DeviceSecurityService {
     
     try {
       // Check for jailbreak/root
-      _isJailbrokenOrRooted = await FlutterJailbreakDetection.jailbroken;
+      _isJailbrokenOrRooted = await JailbreakRootDetection.instance.isJailBroken;
       return _isJailbrokenOrRooted!;
     } catch (e) {
       print('Error checking device security status: $e');
@@ -41,7 +41,7 @@ class DeviceSecurityService {
   /// Returns true if developer mode is enabled
   Future<bool> isDeveloperModeEnabled() async {
     try {
-      return await FlutterJailbreakDetection.developerMode;
+      return await JailbreakRootDetection.instance.isDevMode;
     } catch (e) {
       print('Error checking developer mode: $e');
       // Default to false if check fails

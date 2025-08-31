@@ -1,4 +1,4 @@
-import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
+import 'package:jailbreak_root_detection/jailbreak_root_detection.dart';
 
 /// DeviceIntegrity provides a simple way to check if a device has been
 /// jailbroken (iOS) or rooted (Android), or if developer mode is enabled,
@@ -8,8 +8,8 @@ class DeviceIntegrity {
   /// 
   /// Returns true if the device is compromised
   static Future<bool> isCompromised() async {
-    final jailbroken = await FlutterJailbreakDetection.jailbroken;
-    final developerMode = await FlutterJailbreakDetection.developerMode;
+    final jailbroken = await JailbreakRootDetection.instance.isJailBroken;
+    final developerMode = await JailbreakRootDetection.instance.isDevMode;
     return jailbroken || developerMode;
   }
 }

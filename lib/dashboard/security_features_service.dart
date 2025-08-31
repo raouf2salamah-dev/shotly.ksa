@@ -117,7 +117,7 @@ class SecurityFeaturesService {
       'Jailbreak Detection': {
         'enabled': true,
         'description': 'Detects if a device is jailbroken/rooted or has developer mode enabled',
-        'implementation': 'DeviceIntegrity class using flutter_jailbreak_detection',
+        'implementation': 'DeviceIntegrity class using jailbreak_root_detection',
         'lastUpdated': DateTime.now().subtract(const Duration(days: 15)).toIso8601String(),
       },
       'Secure Storage': {
