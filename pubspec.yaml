@@ -85,7 +85,7 @@ dependencies:
   
   # Security
   visibility_detector: ^0.4.0+2
-  flutter_windowmanager: ^0.2.0
+
   dio: ^5.4.0  # HTTP client with pinning support
   flutter_secure_storage: ^10.0.0-beta.4  # For secure encrypted storage
   asn1lib: ^1.6.5  # Using older version for Uint8List compatibility
