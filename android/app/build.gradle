@@ -82,11 +82,10 @@ android {
             shrinkResources false
         }
         release {
-            signingConfig signingConfigs.release
-            
-            // Enable code and resource shrinking for smaller APK size
-            minifyEnabled true
-            shrinkResources true
+        
+        // Enable code and resource shrinking for smaller APK size
+        minifyEnabled true
+        shrinkResources true
             
             // Use ProGuard configuration
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
