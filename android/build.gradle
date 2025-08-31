@@ -10,16 +10,12 @@
          mavenCentral() 
      } 
  
-     dependencies { 
-         // Android Gradle Plugin 
-         classpath 'com.android.tools.build:gradle:8.1.0' 
-         // Kotlin Gradle Plugin 
-         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" 
-         // Google Services plugin (for Firebase) 
-         classpath 'com.google.gms:google-services:4.4.3' 
-         // Firebase Crashlytics Gradle plugin 
-         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9' 
-     } 
+     dependencies {
+        // Google Services plugin (for Firebase)
+        classpath 'com.google.gms:google-services:4.4.3'
+        // Firebase Crashlytics Gradle plugin
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+    } 
  } 
  
  plugins { 
