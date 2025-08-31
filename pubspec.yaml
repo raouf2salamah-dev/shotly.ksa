@@ -43,7 +43,7 @@ dependencies:
   fl_chart: ^1.0.0
   
   # Navigation
-  go_router: ^16.2.0
+  go_router: ^16.2.1
   introduction_screen: ^4.0.0
   
   # Utilities
@@ -89,8 +89,7 @@ dependencies:
   dio: ^5.4.0  # HTTP client with pinning support
   flutter_secure_storage: ^10.0.0-beta.4  # For secure encrypted storage
   asn1lib: ^1.6.5  # Using older version for Uint8List compatibility
-dependency_overrides:
-  image_picker_platform_interface: ^2.10.0
+
 
 dev_dependencies:
   flutter_test:
